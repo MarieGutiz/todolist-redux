@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { TodoService } from '../todo.service';
+import { NgRedux, select } from '@angular-redux/store';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO } from '../actions';
+import { IAppState } from '../store';
 
 @Component({
   selector: 'todo-list',
@@ -7,24 +10,22 @@ import { TodoService } from '../todo.service';
   styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent  {
+ @select((state:IAppState)=>state.todos) todos$!:Observable<any>
+  constructor(public ngRedux:NgRedux<IAppState>) { 
 
-  constructor(public todoService:TodoService) { 
-    
   }
-
   addItem(input:HTMLInputElement){
-    if(!input) return ;
-
-    this.todoService.addTodo(input.value)
-
+    if(!input) return ;  
+    this.ngRedux.dispatch({type: ADD_TODO, title:input.value})
     input.value = ' ';
+  
   }
 
   toggleTodo(todo:any){
-   this.todoService.toggleTodo(todo);
+   this.ngRedux.dispatch({type:TOGGLE_TODO, id:todo.id})
   }
 
   removeTodo(todo:any){
-   this.todoService.removeTodo(todo);
+   this.ngRedux.dispatch({type:REMOVE_TODO, id:todo.id})
   }
 }

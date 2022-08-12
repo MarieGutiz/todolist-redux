@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { TodoService } from '../todo.service';
+import { NgRedux, select } from '@angular-redux/store';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { CLEAR_TODOS } from '../actions';
+import { IAppState } from '../store';
 
 @Component({
   selector: 'dashboard',
@@ -7,34 +10,13 @@ import { TodoService } from '../todo.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent{
- todos!:number;
- lastUpdate!:Date;
-  constructor(private todoService: TodoService) { 
-    this.todos = this.todoService.getTodos.length;
-    
-    this.todoService.todoAdded.subscribe(()=>{
-      this.todos++;
-      this.lastUpdate = new Date();
-    });
-
-    this.todoService.todoRemoved.subscribe(() =>{
-      this.todos--;
-      this.lastUpdate = new Date();
-    });
-
-    this.todoService.todoToggled.subscribe(()=>{
-      this.lastUpdate = new Date();
-    });
-
-    this.todoService.todoCleared.subscribe(() =>{
-      this.todos =0;
-      this.lastUpdate = new Date();
-    })
-
-  }
+  @select((state:IAppState)=>state.todos) todos$!:Observable<any>
+  @select((state:IAppState)=>state.lastUpdate) lastUpdate$!:Observable<Date>
+  constructor(private ngRedux: NgRedux<IAppState>) {
+   }
 
   clearTodos(){
-    this.todoService.clearTodos();
+   this.ngRedux.dispatch({type:CLEAR_TODOS})
   }
 
 }

@@ -2,7 +2,7 @@
 <input type="text" #title>
 <button (click)="addItem(title)">Add</button>
 <ul>
-    <li *ngFor="let item of todoService.getTodos()">
+    <li *ngFor="let item of (todos$ | async)">
         <span (click)="toggleTodo(item)" [class.completed]="item.isCompleted">{{ item.title  }}</span>
         <button (click)="removeTodo(item)" class="space">Remove</button>
     </li>

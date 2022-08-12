@@ -1,4 +1,4 @@
 <h1>My Dashboard</h1>
-<p>Last Update : {{ lastUpdate | date:'mediumTime' }}</p>
-<p>Total Items : {{todos}}</p>
+<p *ngIf="(lastUpdate$|async) as date">Last Update : {{ date | date:'mediumTime'}}</p>
+<p>Total Items : {{ (todos$ | async).length }}</p>
 <button (click)="clearTodos()">Delete All</button>
